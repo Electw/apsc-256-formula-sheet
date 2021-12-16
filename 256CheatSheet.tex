@@ -1,0 +1,720 @@
+% Cheat sheet for 256 final exam. Adapted from the Griffith Quantum Mechanics Time Dependent Perturbation theory CheatSheet (UCB 137B final) template by Liuke LYU.
+
+\documentclass[a4paper]{article}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
+\usepackage{siunitx}
+\usepackage{hyperref}
+\usepackage{listings}
+
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries\boldmath}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries\boldmath}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries\boldmath}}
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\footnotesize\bfseries\boldmath}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+% CODE BLOCK FORMAT BELOW IS FROM https://gist.github.com/eyliu/120689
+% CHANGES TO INDENT SIZE AND LINE NUMBERING WERE MADE
+
+% This is the color used for MATLAB comments below
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,                        % Use MATLAB
+        frame=single,                           % Single frame around code
+        basicstyle=\small\ttfamily,             % Use small true type font
+        keywordstyle=[1]\color{Blue}\bfseries,        % MATLAB functions bold and blue
+        keywordstyle=[2]\color{Purple},         % MATLAB function arguments purple
+        keywordstyle=[3]\color{Blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,                       % Nothing special about identifiers
+                                                % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{Purple},             % Strings are purple
+        showstringspaces=false,                 % Don't put marks in string spaces
+        tabsize=4,                              % 4 spaces per tab
+        %
+        %%% Put standard MATLAB functions not included in the default
+        %%% language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %
+        %%% Put user defined functions here
+        morekeywords=[3]{FindESS, homework_example}
+        }
+
+% -----------------------------------------------------------------------
+
+\title{APSC 256 final cheat sheet}
+
+\begin{document}
+
+\raggedright
+\footnotesize
+
+\begin{center}
+     \Large{\textbf{APSC 256 final exam cheat sheet by Michael Ma}} \\
+\end{center}
+\begin{multicols*}{3}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\section{Errors}
+\begin{align*}
+    E_t = \text{True value} - \text{Approximate value}
+\end{align*}
+
+\subsection{True relative error}
+\begin{equation*}
+    \epsilon_t = \frac{\text{true value} - \text{approximation}}{\text{true value}}\times100\%
+\end{equation*}
+
+\subsection{Approximate relative error}
+\begin{equation*}
+    \epsilon_a = \frac{\text{present approximation} - \text{previous approximation}}{\text{present approximation}}\times100\%
+\end{equation*}
+
+\subsection{Stopping criterion}
+\begin{align*}
+    \left|\epsilon_a\right|&\leq\epsilon_s\\
+    \epsilon_s&=(0.5\times10^{2-n})\%
+\end{align*}
+
+\subsection{Digital representations}
+\subsubsection{The base-10 digit representation}
+\begin{equation*}
+    s_m d_{m0}.d_{m1}d_{m2}d_{m3}d_{m4}\ldots\times10^{s_e d_{e0}d_{e1}d_{e2}d_{e3}}
+\end{equation*}
+Where $s_m$ is mantissa sign digit, $d_m$ are mantissa digits, $s_e$ is exponent sign digit, $d_e$ is exponent digit. Must be normalized, i.e. only one digit before the decimal point.
+
+\subsubsection{The base-10 floating point representation}
+\begin{equation*}
+    =\pm m\times 10^{\pm e}
+\end{equation*}
+
+\subsection{Overflow errors}
+Overflow errors are caused when a value exceeds the max positive value of a given digit representation. 
+
+\subsection{Underflow errors}
+Underflow errors are just the opposite, when a value is smaller than the min value. 
+
+\subsection{Roundoff errors}
+A resolution is one-tenth of the step size. The corresponding roundoff error is one-half of the resolution. 
+
+\section{Taylor series}
+\begin{equation*}
+    f(x) \approx f(a) + \frac{f^\prime(a)}{1!}(x-a) + \frac{f^{\prime\prime}(a)}{2!}(x-a)^2 + \ldots + \frac{f^{(n)}(a)}{n!}(x-a)^n + R_n
+\end{equation*}
+$a$ is centre point for approximated function and $f(x)$ is close to $a$.
+
+Truncation error:
+\begin{equation*}
+    R_n = \frac{f^{(n+1)}(c)}{(n+1)!}(x-a)^{(n+1)}
+\end{equation*}
+Where $c$ is a number between $x$ and $a$.
+
+\subsection{Simplified Taylor series}
+\begin{equation*}
+    f(x_{i+1}) \approx f(x_i) + \frac{f^\prime(x_i)}{1!}h + \frac{f^{\prime\prime}(x_i)}{2!}h^2 + \ldots + \frac{f^{(n)}(x_i)}{n!}h^n + R_n
+\end{equation*}
+where $h$ is step size, $f(x_{i+1})$ is the approximation and $f(x_i)$ is the past approximation.
+
+\section{Derivative approximation}
+\subsection{Low Accuracy Formulas}
+\subsubsection{Forward finite difference}
+\begin{equation*}
+    f^\prime(x)=\frac{f(x+h)-f(x)}{h}+O(h)
+\end{equation*}
+
+\subsubsection{Backwards finite difference}
+\begin{equation*}
+    f^\prime(x)=\frac{f(x)-f(x-h)}{h}+O(h)    
+\end{equation*}
+
+\subsubsection{Centred finite difference}
+\begin{equation*}
+    f^\prime(x)=\frac{f(x+h)-f(x-h)}{2h}+O(h^2)
+\end{equation*}
+
+\subsection{High Accuracy Formulas}
+\subsubsection{Forward finite difference of \texorpdfstring{$O(h^2)$}{O(h2)}}
+\begin{equation*}
+    f^\prime(x)=\frac{-f(x+2h)+4f(x+h)-3f(x)}{2h}+O(h^2)
+\end{equation*}
+
+\subsubsection{Backward finite difference of \texorpdfstring{$O(h^2)$}{O(h2)}}
+\begin{equation*}
+    f^\prime(x)=\frac{3f(x)-4f(x-h)-f(x-2h)}{2h}+O(h^2)
+\end{equation*}
+
+\subsubsection{Centred finite difference of \texorpdfstring{$O(h^4)$}{O(h4)}}
+\begin{equation*}
+    f^\prime(x)=\frac{-f(x+2h)+8f(x+h)-8f(x-h)+f(x-2h)}{12h}+O(h^4)
+\end{equation*}
+
+\section{Bracketing methods for root finding}
+\subsection{Bisection method}
+A root of a function is between upper and lower bounds if the sign changes between the lower bound and upper bound. Multiplying the values at the two bounds should yield a negative number. Now we can test with a bisection.
+\begin{itemize}
+    \item Test A: If $\displaystyle f(x_l)\times f\left(\frac{x_l+x_u}{2}\right) > 0$, then there is no root in the bracket. Set $\displaystyle x_l=\frac{x_l+x_u}{2}$.
+
+    \item Test B: If $\displaystyle f(x_l)\times f\left(\frac{x_l+x_u}{2}\right) < 0$, then there is a root in the bracket. Set $\displaystyle x_u=\frac{x_l+x_u}{2}$.
+\end{itemize}
+Run it a few times, root should approximately be $\displaystyle x_R \approx \frac{x_l+x_u}{2}$
+
+\subsection{False position method/linear interpolation}
+Ensure that the root is in between the lower and upper bounds my performing a multiplication test and see if the result is negative.
+
+\begin{equation*}
+    x_r = x_u-\frac{f(x_u)(x_l-x_u)}{f(x_l)-f(x_u)}
+\end{equation*}
+
+\section{Open methods of root finding}
+\subsection{Fixed point iteration}
+Isolate $x$ and the function on the right is $g(x)$. Repeat till root is found.
+\begin{equation*}
+    x_{i+1}=g(x_i)
+\end{equation*}
+
+\subsection{Newton-Raphson method}
+\begin{equation*}
+    x_{i+1}\approx x_i - \frac{f(x_i)}{f^\prime (x_i)}
+\end{equation*}
+Will have problems if $f^\prime (x_i) = 0$.
+
+\subsection{Secant method}
+\begin{equation*}
+    x_{i+1}=x_i-\frac{f(x_i)(x_{i-1}-x_i)}{f(x_{i-1})-f(x_i)}
+\end{equation*}
+
+\section{Linear algebra and matrices}
+\subsection{Linear systems}
+\subsubsection{Row vector}
+\begin{equation*}
+    [b]=
+    \begin{bmatrix}
+    b_1 & b_2 & b_3 & \cdots
+    \end{bmatrix}
+\end{equation*}
+
+\subsubsection{Column vector}
+\begin{equation*}
+    [c]=
+    \begin{bmatrix}
+    c_1 \\
+    c_2 \\ 
+    c_3 \\
+    \vdots
+    \end{bmatrix}
+\end{equation*}
+
+\subsubsection{Matrix}
+\begin{equation*}
+    [A]=
+    \begin{bmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & \cdots & a_{2n} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mn} 
+    \end{bmatrix}
+\end{equation*}
+
+\subsubsection{Identity matrix}
+\begin{equation*}
+    [I]=
+    \begin{bmatrix}
+    1 & 0 & \cdots & 0 \\
+    0 & 1 & \cdots & 0 \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & \cdots & 1 
+    \end{bmatrix}
+\end{equation*}
+
+\subsubsection{Diagonal matrix}
+\begin{equation*}
+    [A]=
+    \begin{bmatrix}
+    a_{11} & 0 & \cdots & 0 \\
+    0 & a_{22} & \cdots & 0 \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & \cdots & a_{mn}
+    \end{bmatrix}
+\end{equation*}
+
+\subsubsection{Upper triangular matrix}
+\begin{equation*}
+    [A]=
+    \begin{bmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    0 & a_{22} & \cdots & a_{2n} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & \cdots & a_{mn} 
+    \end{bmatrix}
+\end{equation*}
+
+\subsubsection{Lower triangular matrix}
+\begin{equation*}
+    [A]=
+    \begin{bmatrix}
+    a_{11} & 0 & \cdots & 0 \\
+    a_{21} & a_{22} & \cdots & 0 \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mn} 
+    \end{bmatrix}
+\end{equation*}
+
+\subsection{Linear operations}
+\subsubsection{Matrix transposition}
+Flipping a matrix along a diagonal axis from top left to bottom right.
+\begin{equation*}
+    [A]^T =
+    \begin{bmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & \cdots & a_{2n} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mn} 
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+    a_{11} & a_{21} & \cdots & a_{n1} \\
+    a_{12} & a_{22} & \cdots & a_{n2} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{1m} & a_{2m} & \cdots & a_{nm} 
+    \end{bmatrix}
+\end{equation*}
+
+\subsubsection{Matrix addition and subtraction}
+\begin{align*}
+    [A]+[B]&=
+    \begin{bmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & \cdots & a_{2n} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mn} 
+    \end{bmatrix} +
+    \begin{bmatrix}
+    b_{11} & b_{12} & \cdots & b_{1n} \\
+    b_{21} & b_{22} & \cdots & b_{2n} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    b_{m1} & b_{m2} & \cdots & b_{mn} 
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+    a_{11}+b_{11} & a_{12}+b_{12} & \cdots & a_{1n}+b_{1n} \\
+    a_{21}+b_{21} & a_{22}+b_{22} & \cdots & a_{2n}+b_{2n} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1}+b_{m1} & a_{m2}+b_{m2} & \cdots & a_{mn}+b_{mn} 
+    \end{bmatrix}
+\end{align*}
+Addition/subtraction is commutative
+\begin{equation*}
+    [A]+[B]=[B]+[A]
+\end{equation*}
+Addition/subtraction is associative
+\begin{equation*}
+    ([A]+[B])+[C]=[A]+([B]+[C])
+\end{equation*}
+
+\subsubsection{Matrix multiplication}
+\paragraph{Scalar multiplication}
+\begin{align*}
+    k[A]=
+    k\begin{bmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & \cdots & a_{2n} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mn} 
+    \end{bmatrix}=
+    \begin{bmatrix}
+    ka_{11} & ka_{12} & \cdots & ka_{1n} \\
+    ka_{21} & ka_{22} & \cdots & ka_{2n} \\ 
+    \vdots & \vdots & \ddots & \vdots \\
+    ka_{m1} & ka_{m2} & \cdots & ka_{mn} 
+    \end{bmatrix}
+\end{align*}
+
+\paragraph{Matrix multiplication}
+\begin{align*}
+    [A][B]&=
+    \begin{bmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & a_{22} \\ 
+    \end{bmatrix}
+    \begin{bmatrix}
+    b_{11} & b_{12} \\
+    b_{21} & b_{22} \\ 
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+    a_{11}b_{11}+a_{12}b_{21} & a_{11}b_{12}+a_{12}b_{22} \\
+    a_{21}b_{11}+a_{22}b_{21} & a_{21}b_{12}+a_{22}b_{22} \\ 
+    \end{bmatrix}
+\end{align*}
+Matrix multiplication is associative
+\begin{equation*}
+     ( [A] [B] ) [C] = [A] ( [B] [C] )
+\end{equation*}
+Matrix multiplication is distributive
+\begin{align*}
+    [A] ( [B] + [C] ) &= [A][B] + [A][C]\\
+    ( [A] + [B] ) [C] &= [A][C] + [B][C]
+\end{align*}
+Matrix multiplication is NOT commutative
+\begin{equation*}
+    [A][B] \neq [B][A]
+\end{equation*}
+
+\paragraph{Element-by-element matrix multiplication (Hadamard product)}
+\begin{align*}
+    [A]\circ[B]&=
+    \begin{bmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & a_{22}
+    \end{bmatrix}
+    \begin{bmatrix}
+    b_{11} & b_{12} \\
+    b_{21} & b_{22}
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+    a_{11}b_{11} & a_{12}b_{12} \\
+    a_{21}b_{21} & a_{22}b_{22} 
+    \end{bmatrix}
+\end{align*}
+
+\paragraph{Matrix determinant calculation}
+\begin{equation*}
+    |A|=\begin{vmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & a_{22}
+    \end{vmatrix}=a_{11}a_{22}-a_{12}a_{21}
+\end{equation*}
+
+\paragraph{Matrix division}
+\begin{equation*}
+    [x]=[A^{-1}][b]
+\end{equation*}
+
+\section{Gauss elimination}
+REF and RREF, with some pivoting. Backwards substitution to find values.
+
+\section{LU factorization}
+\begin{align*}
+    [A][x]&=[b],\\
+    \begin{bmatrix}
+    a_{11} & a_{12} & a_{13} \\
+    a_{21} & a_{22} & a_{23} \\
+    a_{31} & a_{32} & a_{33}
+    \end{bmatrix}
+    \begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    x_3
+    \end{bmatrix}&=
+    \begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    b_3
+    \end{bmatrix}\\
+    \\
+    [L][d]&=[b],\\
+    \begin{bmatrix}
+    1 & 0 & 0 \\
+    l_{21} & 1 & 0 \\
+    l_{31} & l_{32} & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+    d_1 \\
+    d_2 \\
+    d_3
+    \end{bmatrix}&=
+    \begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    b_3
+    \end{bmatrix}\\
+    \\
+    [U][x]&=[d],\\
+    \begin{bmatrix}
+    u_{11} & u_{12} & u_{13} \\
+    0 & u_{22} & u_{23} \\
+    0 & 0 & u_{33}
+    \end{bmatrix}
+    \begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    x_3
+    \end{bmatrix}&=
+    \begin{bmatrix}
+    d_1 \\
+    d_2 \\
+    d_3
+    \end{bmatrix}\\
+\end{align*}
+
+\section{Iterative methods}
+\subsection{Linear systems}
+\subsubsection{Gauss-Seidel method}
+\begin{align*}
+    x_1^{(i)}&=\frac{b_1-a_{12}x_2^{(i-1)}-a_{13}x_3^{(i-1)}}{a_{11}}\\
+    x_2^{(i)}&=\frac{b_2-a_{21}x_1^{(i)}-a_{23}x_3^{(i-1)}}{a_{22}}\\
+    x_3^{(i)}&=\frac{b_3-a_{31}x_1^{(i)}-a_{32}x_2^{(i)}}{a_{33}}
+\end{align*}
+
+\subsection{Nonlinear systems}
+\subsubsection{Successive substitution method}
+\begin{align*}
+    &x_{1,i+1}=f_1(x_{1,i},x_{2,i},\ldots,x_{n,i})\\
+    &x_{2,i+1}=f_1(x_{1,i+1},x_{2,i},\ldots,x_{n,i})\\
+    &\vdots\\
+    &x_{n,i+1}=f_1(x_{1,i+1},x_{2,i+1},\ldots,x_{n,i})
+\end{align*}
+
+\subsubsection{Newton-Raphson method}
+\begin{equation*}
+    [x_{i+1}]=[x_i]-[J]^{-1}[f]
+\end{equation*}
+Where the Jacobian matrix is
+\begin{equation*}
+    [J]=\begin{bmatrix}
+    \frac{\partial f_{1,i}}{\partial x_1} & \frac{\partial f_{1,i}}{\partial x_2} & \cdots & \frac{\partial f_{1,i}}{\partial x_n} \\
+    \frac{\partial f_{2,i}}{\partial x_1} & \frac{\partial f_{2,i}}{\partial x_2} & \cdots & \frac{\partial f_{2,i}}{\partial x_n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \frac{\partial f_{n,i}}{\partial x_1} & \frac{\partial f_{n,i}}{\partial x_2} & \cdots & \frac{\partial f_{n,i}}{\partial x_n}
+    \end{bmatrix}
+\end{equation*}
+
+\section{Numerical integration methods}
+\subsection{Analytical method}
+What you learned in Calculus 1.
+\begin{equation*}
+    \int_a^b f(x) dx = F(b) - F(a)
+\end{equation*}
+
+\subsection{Newton-Cotes formulas}
+Replace the function with one that is easier to integrate.
+\begin{equation*}
+    \int_a^b f(x) dx \approx \int_a^b f_n(x)dx
+\end{equation*}
+
+\subsection{Trapezoidal rule}
+\begin{equation*}
+    \int_a^b f(x)dx \approx (b-a)\frac{f(a)+f(b)}{2}
+\end{equation*}
+\paragraph{Error for trapezoidal rule} 
+\begin{equation*}
+    E_t=-\frac{1}{12}f^{\prime\prime}(\xi)(b-a)^3
+\end{equation*}
+Where $\xi$ is somewhere between $a$ and $b$.
+
+\subsubsection{Composite trapezoidal rule}
+\begin{equation*}
+    \int_a^b f(x)dx \approx\frac{h}{2}[f(x_0)+2f(x_1)+2f(x_2)+\ldots+2f(x_{n-1})+f(x_n)]
+\end{equation*}
+
+\subsection{Simpson's rules}
+\subsubsection{Simpson's 1/3 rule}
+\begin{equation*}
+    \int_a^b f(x)dx \approx\frac{h}{3}[f(x_0)+4f(x_1)+f(x_2)]
+\end{equation*}
+
+\subsubsection{Composite Simpson's 1/3 rule}
+\begin{equation*}
+    \int_a^b f(x)dx \approx\frac{h}{3}[f(x_0)+4f(x_1)+2f(x_2)+4f(x_3)+f(x_4)]
+\end{equation*}
+
+\subsubsection{Simpson's 3/8 rule}
+\begin{equation*}
+    \int_a^b f(x)dx \approx\frac{3h}{8}[f(x_0)+3f(x_1)+3f(x_2)+f(x_3)]
+\end{equation*}
+
+\section{Ordinary differential equations}
+\subsection{Explicit Euler's method}
+\begin{equation*}
+    y_{i+1}=y_i+f(t_i,y_i)h
+\end{equation*} 
+Error of $E_t = O(h)$.
+
+\subsection{Implicit Euler's method}
+\begin{equation*}
+    y_{i+1}=y_i+f(t_{i+1},y_{i+1})h
+\end{equation*} 
+Error of $E_t = O(h)$.
+
+\subsection{Heun's method}
+\paragraph{Predictor step}
+\begin{equation*}
+    y_{i+1}^0=y_i+f(t_i,y_i)h
+\end{equation*}
+\paragraph{Corrector step}
+\begin{equation*}
+    y_{i+1}=y_i+\frac{1}{2}\left(f(t_i,y_i)+f\left(t_{i+1},y_{i+1}^0\right)\right)h
+\end{equation*}
+Error of $E_t = O(h^2)$.
+
+\subsection{Midpoint method}
+\begin{align*}
+    y_{i+1/2} &= y_i+f(t_i,y_i)\frac{h}{2}\\
+    y_{i+1} &= y_i + f(t_{i+1/2},y_{i+1/2})h
+\end{align*}
+where 
+\begin{equation*}
+    t_{i+1/2}=t_i+\frac{1}{2}h
+\end{equation*}
+Error of $E_t = O(h^2)$.
+
+\subsection{Runge-Kutta 4th order method (RK4)}
+\begin{equation*}
+    y_{i+1}=y_i+\frac{1}{6}(k_1+2k_2+2k_3+k_4)h
+\end{equation*}
+where
+\begin{align*}
+    k_1&=f(t_0,y_0)\\
+    k_2&=f(t_i+\frac{h}{2},y_i+k_1\frac{h}{2})\\
+    k_3&=f(t_i+\frac{h}{2},y_i+k_2\frac{h}{2})\\
+    k_4&=f(t_i+h,y_i+k_3h)\\
+\end{align*}
+Error of $E_t=O(h^4)$
+
+\vfill\null
+\columnbreak
+
+\section{MATLAB functions}
+
+\subsection{Basic shit}
+\begin{lstlisting}[language=Matlab, breaklines]
+log()
+\end{lstlisting}
+Natural logarithm.
+
+\begin{lstlisting}[language=Matlab, breaklines]
+log10()
+\end{lstlisting}
+Base 10 logarithm.
+
+\begin{lstlisting}[language=Matlab, breaklines]
+linspace(x1,x2,n)
+\end{lstlisting}
+Creates a vector with \lstinline{n} equally spaced points from \lstinline{x1} to \lstinline{x2}, inclusive.
+
+\begin{lstlisting}[language=Matlab, breaklines]
+logspace(x1,x2,n)
+\end{lstlisting}
+Creates a vector with \lstinline{n} logarithmically spaced points from 10\textsuperscript{\lstinline{x1}} to 10\textsuperscript{\lstinline{x2}}, inclusive.
+
+\begin{lstlisting}[language=Matlab, breaklines]
+fhandle = @(arglist) expression
+\end{lstlisting}
+Anonymous function
+
+\subsection{fzero (Captain Falcon!)}
+\begin{lstlisting}[language=Matlab, breaklines]
+[x,fx] = fzero(function,x0,options,p1,p2,...)
+\end{lstlisting}
+Calculates roots
+
+\subsection{Matrix stuff}
+\begin{lstlisting}[language=Matlab, breaklines]
+A[n,m]
+\end{lstlisting}
+Element at \lstinline{n}th row, \lstinline{m}th column
+
+\begin{lstlisting}[language=Matlab, breaklines]
+A[n,:]
+\end{lstlisting}
+Returns \lstinline{n}th row
+
+\begin{lstlisting}[language=Matlab, breaklines]
+A[:,m]
+\end{lstlisting}
+Returns \lstinline{m}th column
+
+\begin{lstlisting}[language=Matlab, breaklines]
+A*B
+\end{lstlisting}
+Multiplies matrices
+
+\begin{lstlisting}[language=Matlab, breaklines]
+A.*B
+\end{lstlisting}
+Multiplies matrices element by element
+
+\begin{lstlisting}[language=Matlab, breaklines]
+det(A)
+\end{lstlisting}
+Calculates determinant
+
+\columnbreak
+
+\begin{lstlisting}[language=Matlab, breaklines]
+inv(A)
+\end{lstlisting}
+Calculates inverse of matrix
+
+\begin{lstlisting}[language=Matlab, breaklines]
+A/b
+\end{lstlisting}
+Right division
+
+\begin{lstlisting}[language=Matlab, breaklines]
+A\b
+\end{lstlisting}
+Left division
+
+\subsection{LU factorization}
+\begin{lstlisting}[language=Matlab, breaklines]
+[L,U] = lu(A)
+\end{lstlisting}
+LU factorization
+
+\subsection{Iterative methods}
+\begin{lstlisting}[language=Matlab, breaklines]
+[x, fx] = fsolve(function, x0, options)
+\end{lstlisting}
+Solves nonlinear equations
+
+\section{MATLAB order of operations}
+\begin{enumerate}
+    \item Exponentiation: \lstinline{^}
+    \item Negation: \lstinline{-}
+    \item Multiplication/division: \lstinline{*} and \lstinline{/}
+    \item Left division: \lstinline{\}
+    \item Addition/subtraction: \lstinline{+} and \lstinline{-}
+\end{enumerate}
+
+\end{multicols*}
+
+\end{document}
