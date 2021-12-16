@@ -1,5 +1,7 @@
 # APSC 256 formula sheet
 
+Cheat sheet for APSC 256 at UBCO. Use this to help create your own formula sheet, but I would recommend you follow the rules laid out by your professor.
+
 Adapted from [Griffith Quantum Mechanics Time Dependent Perturbation theory CheatSheet (UCB 137B final)](https://www.overleaf.com/articles/griffith-quantum-mechanics-time-dependent-perturbation-theory-cheatsheet-ucb-137b-final/jwynrzctvqgp) by Liuke LYU.
 
 ## Editing
